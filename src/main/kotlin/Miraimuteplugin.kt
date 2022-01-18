@@ -15,19 +15,17 @@ object Miraimuteplugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.miraimu
     override fun onEnable() {
         logger.info { "Plugin loaded" }
         this.globalEventChannel().subscribeAlways<GroupMessageEvent> {
-            if (group.botPermission > sender.permission) {
-                if (sender.id == preSenderId && message.serializeToMiraiCode() == preMessage) {
-                    num++
-                    if (num >= 3) {
+            if (sender.id == preSenderId && message.serializeToMiraiCode() == preMessage) {
+                num++
+                if (num >= 3) {
+                    if (group.botPermission > sender.permission)
                         sender.mute(60)
-                        num = 1
-                        preMessage = ""
-                        preSenderId = 0
-                    }
-                }else {
-                    preSenderId = sender.id
-                    preMessage = message.serializeToMiraiCode()
+                    num = 0
                 }
+            }else {
+                preSenderId = sender.id
+                preMessage = message.serializeToMiraiCode()
+                num=1
             }
         }
     }
