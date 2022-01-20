@@ -8,4 +8,5 @@ object MiraiMutePluginConfig: AutoSavePluginConfig("MiraiMutePluginConfig") {
     val max:Int by value(6000)
     val timer:Int by value(10)
     val clearTime:String by value("04:00")
+    val groupList:List<Long> by value()
 }
