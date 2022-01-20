@@ -11,11 +11,12 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @OptIn(ConsoleExperimentalApi::class)
-object MiraiMutePlugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.MiraiMutePlugin", version = "1.1.0")) {
+object MiraiMutePlugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.MiraiMutePlugin", version = "1.1.1")) {
 
     private var num: Int = 1
     private var preMessage: String = ""
     private var preSenderId: Long = 0
+    private var preGroupId: Long = 0
     private lateinit var map: MutableMap<Long, Int>
 
     override fun onEnable() {
@@ -34,7 +35,7 @@ object MiraiMutePlugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.MiraiMu
         }, Date(), 60000)
 
         this.globalEventChannel().subscribeAlways<GroupMessageEvent> {
-            if (sender.id == preSenderId && message.serializeToMiraiCode() == preMessage) {
+            if (group.id== preGroupId&&sender.id == preSenderId && message.serializeToMiraiCode() == preMessage) {
                 num++
                 if (num >= 3) {
                     if (group.botPermission > sender.permission) {
@@ -50,6 +51,7 @@ object MiraiMutePlugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.MiraiMu
                     num = 0
                 }
             } else {
+                preGroupId = group.id
                 preSenderId = sender.id
                 preMessage = message.serializeToMiraiCode()
                 num = 1
