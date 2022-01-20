@@ -1,7 +1,5 @@
 package nya.xfy
 
-import kotlinx.coroutines.launch
-import net.mamoe.mirai.console.data.PluginDataHolder
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
@@ -10,10 +8,10 @@ import net.mamoe.mirai.event.globalEventChannel
 import net.mamoe.mirai.utils.info
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 @OptIn(ConsoleExperimentalApi::class)
-object MiraiMutePlugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.MiraiMutePlugin", version = "1.1.0")),
-    PluginDataHolder {
+object MiraiMutePlugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.MiraiMutePlugin", version = "1.1.0")) {
 
     private var num: Int = 1
     private var preMessage: String = ""
@@ -27,6 +25,13 @@ object MiraiMutePlugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.MiraiMu
         MiraiMutePluginConfig.reload()
 
         map = MiraiMutePluginData.mutableMap
+
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                if (LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm")).equals(MiraiMutePluginConfig.clearTime))
+                    map.clear()
+            }
+        }, Date(), 60000)
 
         this.globalEventChannel().subscribeAlways<GroupMessageEvent> {
             if (sender.id == preSenderId && message.serializeToMiraiCode() == preMessage) {
@@ -48,12 +53,6 @@ object MiraiMutePlugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.MiraiMu
                 preSenderId = sender.id
                 preMessage = message.serializeToMiraiCode()
                 num = 1
-            }
-        }
-
-        launch {
-            if (LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm")) == MiraiMutePluginConfig.clearTime) {
-                map.clear()
             }
         }
     }
