@@ -7,9 +7,17 @@ plugins {
 }
 
 group = "nya.xfy"
-version = "1.0.0"
+version = "1.1.0"
 
 repositories {
     maven("https://maven.aliyun.com/repository/public")
     mavenCentral()
+    maven {
+        url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+        name = "ktor-eap"
+    }
+    maven {
+        url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+        name = "ktor-eap"
+    }
 }
