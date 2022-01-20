@@ -1,12 +1,18 @@
 # miraimuteplugin
-一个简单的qq群复读禁言插件
+一个简单的qq群复读禁言插件  使用前记得先给你的bot上管理员
 
-把插件扔进MiraiConsole的Plugins文件夹即可使用
+# 新增了配置系统！对应了新增的功能
 
->复读3次就可以喜提60s禁言大礼包
+在config/nya.xfy.MiraiMutePlugin/MiraiMutePluginConfig.yml中有四个配置项
 
->使用前记得先给你的bot上管理员
+  >min  //是最小禁言时间，按秒算
 
->有问题issue 
+  >max //是最大禁言时间，按秒算
 
->pr is welcome
+  >timer //是禁言时间递增所称的倍数，从最小开始乘，但不会超过最大值，也不会刚好落在最大值
+
+  >clearTime //是刷新禁言递增的时间，默认04:00，如需此功能请按照HH:mm的格式填入，不需要可以随便乱填
+
+# 有问题issue 
+
+# pr is welcome
