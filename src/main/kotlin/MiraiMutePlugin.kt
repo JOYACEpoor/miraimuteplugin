@@ -2,39 +2,29 @@ package nya.xfy
 
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
-import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.utils.info
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
-@OptIn(ConsoleExperimentalApi::class)
-object MiraiMutePlugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.MiraiMutePlugin", version = "1.1.2")) {
+object MiraiMutePlugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.miraimuteplugin", version = "1.1.3")) {
 
-
-    private lateinit var map: MutableMap<Long, Int>
-
+    private val map = MiraiMutePluginData.mutableMap
     override fun onEnable() {
         logger.info { "Plugin loaded" }
-
         MiraiMutePluginData.reload()
         MiraiMutePluginConfig.reload()
 
-        map = MiraiMutePluginData.mutableMap
+        if (MiraiMutePluginConfig.clearTime > -1&&MiraiMutePluginConfig.clearTime<24) {
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.HOUR, MiraiMutePluginConfig.clearTime)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            Timer().schedule(object : TimerTask() { override fun run() { map.clear() } }, Date(calendar.timeInMillis), 86400000)
+        }
 
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                if (LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
-                        .equals(MiraiMutePluginConfig.clearTime)
-                )
-                    map.clear()
-            }
-        }, Date(), 60000)
-
-        for (_groupId in MiraiMutePluginConfig.groupList){
+        for (_groupId in MiraiMutePluginConfig.groupList) {
             var num = 1
             var preMessage = ""
             var preSenderId: Long = 0
