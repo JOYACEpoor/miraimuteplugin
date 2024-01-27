@@ -32,7 +32,7 @@ object MiraiMutePlugin : KotlinPlugin(JvmPluginDescription(id = "nya.xfy.miraimu
                 if (group.botPermission > MemberPermission.MEMBER) {
                     if (sender.id == preSenderId && message.serializeToMiraiCode() == preMessage) {
                         num++
-                        if (num >= 3) {
+                        if (num >= MiraiMutePluginConfig.frequency) {
                             if (group.botPermission > sender.permission) {
                                 if (map.containsKey(sender.id)) {
                                     if (map.getValue(sender.id) * MiraiMutePluginConfig.timer > MiraiMutePluginConfig.max) {
